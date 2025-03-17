@@ -1,0 +1,93 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  .golden-button {
+    background-image: linear-gradient(to right, #ffd700, #daa520);
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 15px rgba(218, 165, 32, 0.4);
+      opacity: 0.95;
+    }
+    transition: all 300ms ease-in-out;
+  }
+
+  .card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    transition: box-shadow 300ms;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
+    &:focus {
+      outline: none;
+      border-color: var(--golden-light);
+      box-shadow: 0 0 0 1px var(--golden-light);
+    }
+    transition: colors 200ms;
+  }
+
+  .flowing-line {
+    position: absolute;
+    width: 16rem;
+    height: 0.25rem;
+    background-image: var(--golden-gradient);
+    opacity: 0.3;
+    border-radius: 9999px;
+    animation: flow-line 3s ease-in-out infinite;
+  }
+}
+
+.flowing-background {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.flowing-background::before,
+.flowing-background::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 215, 0, 0.15) 49%,
+    rgba(184, 134, 11, 0.15) 51%,
+    transparent 55%
+  );
+  transform-origin: center;
+  will-change: transform;
+  animation: flow 12s linear infinite;
+  z-index: -1;
+}
+
+.flowing-background::after {
+  animation-delay: -6s;
+  opacity: 0.05;
+}
+
+@keyframes flow-line {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes flow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
