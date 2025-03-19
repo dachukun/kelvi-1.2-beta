@@ -162,7 +162,7 @@ export default function Generate() {
                     <option value="">Select Grade</option>
                     {grades.map(grade => (
                       <option key={grade} value={grade}>{grade}</option>
-                    ))}
+                    ))}       
                   </select>
                 </div>
                 <div>
