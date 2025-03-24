@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTheme } from '../providers/ThemeProvider';
+import { FiSun, FiMoon } from 'react-icons/fi';
 import { supabase } from '@/utils/supabase';
 import BottomNav from '../dashboard/components/BottomNav';
 
 export default function Profile() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     fetchUserData();
@@ -35,6 +38,18 @@ export default function Profile() {
   return (
     <main className="min-h-screen flowing-background p-4 pb-20 md:p-8 md:pb-24">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* Theme Toggle */}
+        <div className="card flex items-center justify-between p-4">
+          <span className="text-gray-600">Switch Appearance</span>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full hover:bg-golden-light/10 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? <FiMoon size={24} /> : <FiSun size={24} />}
+          </button>
+        </div>
+
         {/* Profile Header with Avatar */}
         <div className="card flex flex-col items-center p-8">
           <div className="w-24 h-24 rounded-full bg-golden-gradient flex items-center justify-center mb-4 transform hover:scale-105 transition-transform">

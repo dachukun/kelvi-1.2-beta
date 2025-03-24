@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import BottomNav from '../dashboard/components/BottomNav';
 
 type Chapter = {
@@ -22,6 +23,9 @@ type FormData = {
 export default function Generate() {
   const [activeTab, setActiveTab] = useState('details');
   const [chapterInput, setChapterInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [generatedPaper, setGeneratedPaper] = useState('');
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState<FormData>({
     schoolName: '',
     board: 'CBSE',
@@ -292,22 +296,67 @@ export default function Generate() {
             <button
               className="golden-button w-full py-4 text-lg font-semibold"
               onClick={() => {
-                // TODO: Implement paper generation logic
-                console.log('Generating paper with:', formData);
+                try {
+                  // Validate form data
+                  if (!formData.schoolName.trim()) throw new Error('Please enter school name');
+                  if (!formData.grade) throw new Error('Please select grade');
+                  if (!formData.subject) throw new Error('Please select subject');
+                  if (formData.chapters.length === 0) throw new Error('Please add at least one chapter');
+                  if (calculateTotalMarks() === 0) throw new Error('Please add questions to chapters');
+
+                  // Generate paper template
+                  const paperTemplate = `${formData.schoolName}
+${formData.board} - ${formData.grade} ${formData.subject}
+Total Marks: ${calculateTotalMarks()}
+
+Question Paper
+
+${formData.chapters.map((chapter, index) => {
+  let chapterQuestions = `Chapter ${index + 1}: ${chapter.name}\n`;
+  chapter.questions.forEach(q => {
+    if (q.count > 0) {
+      chapterQuestions += `${q.count} questions of ${q.marks} ${q.marks === 1 ? 'mark' : 'marks'} each\n`;
+    }
+  });
+  return chapterQuestions;
+}).join('\n')}`;
+
+                  setGeneratedPaper(paperTemplate);
+                  setActiveTab('preview');
+                } catch (err: any) {
+                  setError(err.message || 'Failed to generate paper template');
+                }
               }}
+              disabled={!formData.schoolName || !formData.grade || !formData.subject || formData.chapters.length === 0}
             >
               Generate Question Paper
             </button>
+            {error && (
+              <p className="text-red-500 text-center mt-2">{error}</p>
+            )}
           </div>
         ) : (
           <div className="card space-y-4">
             <h2 className="text-2xl font-semibold bg-golden-gradient text-transparent bg-clip-text">
               Paper Preview
             </h2>
-            <div className="min-h-[500px] flex items-center justify-center border border-golden-light/20 rounded-lg">
-              <p className="text-gray-500">Preview functionality coming soon...</p>
+            <div className="min-h-[500px] border border-golden-light/20 rounded-lg p-6 overflow-auto whitespace-pre-wrap">
+              {generatedPaper ? (
+                <div className="prose max-w-none">{generatedPaper}</div>
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-gray-500">Generate a paper to see the preview</p>
+                </div>
+              )}
             </div>
-            <button className="golden-button w-full" disabled>
+            <button 
+              className="golden-button w-full" 
+              disabled={!generatedPaper}
+              onClick={() => {
+                // TODO: Implement PDF download functionality
+                console.log('Downloading PDF...');
+              }}
+            >
               Download PDF
             </button>
           </div>

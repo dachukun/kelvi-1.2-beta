@@ -32,7 +32,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-golden-light/20 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur-md border-t border-golden-light/20 z-50" style={{ backgroundColor: 'var(--navbar-color)' }}>
       <div className="max-w-4xl mx-auto px-4 py-2">
         <div className="flex justify-around items-center">
           <Link

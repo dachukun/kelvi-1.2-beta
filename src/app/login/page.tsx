@@ -91,12 +91,7 @@ export default function Login() {
             >
               Forgot your password?
             </Link>
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link href="/signup" className="text-golden-dark hover:underline">
-                Sign up
-              </Link>
-            </p>
+
           </div>
         </form>
       </div>

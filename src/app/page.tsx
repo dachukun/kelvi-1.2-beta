@@ -10,12 +10,9 @@ export default function Home() {
         <p className="text-lg md:text-xl text-gray-600 mb-12">
           Your Intelligent Learning Assistant
         </p>
-        <div className="space-x-4">
+        <div>
           <Link href="/login" className="golden-button">
             Login
-          </Link>
-          <Link href="/signup" className="golden-button">
-            Sign Up
           </Link>
         </div>
       </div>

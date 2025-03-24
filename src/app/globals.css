@@ -2,9 +2,45 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:root {
+  --golden-light: #FFD700;
+  --golden-dark: #B8860B;
+  --golden-gradient: linear-gradient(to right, var(--golden-light), var(--golden-dark));
+  --background-color: #ffffff;
+  --navbar-color: #ffffff;
+}
+
+.dark {
+  --golden-light: #B8860B;
+  --golden-dark: #FFD700;
+  --golden-gradient: linear-gradient(to right, var(--golden-dark), var(--golden-light));
+  --background-color: #121212;
+  --navbar-color: #1a1a1a;
+}
+
+.dark .card {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+}
+
+.dark .input-field {
+  background-color: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #ffffff;
+}
+
+.dark .text-gray-600 {
+  color: #a0a0a0;
+}
+
+.dark .text-gray-700 {
+  color: #ffffff;
+}
+
 @layer components {
   .golden-button {
-    background-image: linear-gradient(to right, #ffd700, #daa520);
+    background-image: var(--golden-gradient);
     color: white;
     font-weight: 600;
     padding: 0.5rem 1.5rem;
@@ -41,12 +77,13 @@
 
   .flowing-line {
     position: absolute;
-    width: 16rem;
-    height: 0.25rem;
+    width: 12rem;
+    height: 0.2rem;
     background-image: var(--golden-gradient);
-    opacity: 0.3;
+    opacity: 0.15;
     border-radius: 9999px;
-    animation: flow-line 3s ease-in-out infinite;
+    filter: blur(2px);
+    animation: flow-line 5s ease-in-out infinite;
   }
 }
 
@@ -54,6 +91,7 @@
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  background-color: var(--background-color);
 }
 
 .flowing-background::before,
@@ -67,14 +105,15 @@
   background: linear-gradient(
     45deg,
     transparent 45%,
-    rgba(255, 215, 0, 0.15) 49%,
-    rgba(184, 134, 11, 0.15) 51%,
+    rgba(255, 215, 0, 0.08) 49%,
+    rgba(184, 134, 11, 0.08) 51%,
     transparent 55%
   );
   transform-origin: center;
   will-change: transform;
-  animation: flow 12s linear infinite;
+  animation: flow 15s linear infinite;
   z-index: -1;
+  filter: blur(3px);
 }
 
 .flowing-background::after {
@@ -84,7 +123,7 @@
 
 @keyframes flow-line {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-15px); }
 }
 
 @keyframes flow {

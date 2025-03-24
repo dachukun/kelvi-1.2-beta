@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <radialGradient id="shine" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7">
+        <animate attributeName="stop-opacity" values="0.7;0;0.7" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0">
+        <animate attributeName="stop-opacity" values="0;0.3;0" dur="3s" repeatCount="indefinite" />
+      </stop>
+    </radialGradient>
+  </defs>
+  <rect width="300" height="300" rx="30" fill="#DAA520" />
+  <circle cx="150" cy="150" r="120" fill="url(#shine)" opacity="0.5">
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 150 150"
+      to="360 150 150"
+      dur="4s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  <text x="150" y="135" font-family="Arial" font-size="60" font-weight="bold" text-anchor="middle" fill="#FFFFFF">
+    <tspan>KelviAI</tspan>
+  </text>
+  <text x="150" y="195" font-family="Arial" font-size="30" font-weight="bold" text-anchor="middle" fill="#FFFFFF">
+    <tspan>till you succeed</tspan>
+  </text>
+</svg>
