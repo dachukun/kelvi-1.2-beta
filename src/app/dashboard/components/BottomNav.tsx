@@ -32,33 +32,33 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur-md border-t border-golden-light/20 z-50" style={{ backgroundColor: 'var(--navbar-color)' }}>
+    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur-md border-t border-indigo-light/20 z-50" style={{ backgroundColor: 'var(--navbar-color)' }}>
       <div className="max-w-4xl mx-auto px-4 py-2">
         <div className="flex justify-around items-center">
           <Link
             href="/dashboard"
-            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/dashboard' ? 'text-golden-dark' : 'text-gray-500 hover:text-golden-light'}`}
+            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/dashboard' ? 'text-cream' : 'text-gray-500 hover:text-indigo-light'}`}
           >
             <HomeIcon />
             <span className="text-xs mt-1">Home</span>
           </Link>
           <Link
             href="/generate"
-            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/generate' ? 'text-golden-dark' : 'text-gray-500 hover:text-golden-light'}`}
+            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/generate' ? 'text-cream' : 'text-gray-500 hover:text-indigo-light'}`}
           >
             <GenerateIcon />
             <span className="text-xs mt-1">Generate</span>
           </Link>
           <Link
             href="/profile"
-            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/profile' ? 'text-golden-dark' : 'text-gray-500 hover:text-golden-light'}`}
+            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/profile' ? 'text-cream' : 'text-gray-500 hover:text-indigo-light'}`}
           >
             <ProfileIcon />
             <span className="text-xs mt-1">Profile</span>
           </Link>
           <Link
             href="/support"
-            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/support' ? 'text-golden-dark' : 'text-gray-500 hover:text-golden-light'}`}
+            className={`flex flex-col items-center p-2 transition-colors ${pathname === '/support' ? 'text-cream' : 'text-gray-500 hover:text-indigo-light'}`}
           >
             <SupportIcon />
             <span className="text-xs mt-1">Support</span>

@@ -31,12 +31,12 @@ export default function ResetPassword() {
 
   return (
     <main className="min-h-screen flowing-background flex items-center justify-center p-4">
-      <Link href="/" className="absolute top-4 left-4 golden-button flex items-center gap-2 z-20">
+      <Link href="/" className="absolute top-4 left-4 indigo-button flex items-center gap-2 z-20">
         <span>←</span>
         <span>Back</span>
       </Link>
       <div className="card max-w-md w-full relative z-10">
-        <h1 className="text-3xl font-bold text-center mb-8 bg-golden-gradient text-transparent bg-clip-text">
+        <h1 className="text-3xl font-bold text-center mb-8 bg-indigo-gradient text-transparent bg-clip-text">
           Reset Password
         </h1>
 
@@ -45,7 +45,7 @@ export default function ResetPassword() {
             <p className="text-green-600">
               Password reset link has been sent to your email.
             </p>
-            <Link href="/login" className="golden-button inline-block">
+            <Link href="/login" className="indigo-button inline-block">
               Back to Login
             </Link>
           </div>
@@ -71,14 +71,14 @@ export default function ResetPassword() {
 
             <button
               type="submit"
-              className="golden-button w-full"
+              className="indigo-button w-full"
               disabled={loading}
             >
               {loading ? 'Sending...' : 'Send Reset Link'}
             </button>
 
             <div className="text-center">
-              <Link href="/login" className="text-sm text-golden-dark hover:underline">
+              <Link href="/login" className="text-sm text-cream hover:underline">
                 Back to Login
               </Link>
             </div>

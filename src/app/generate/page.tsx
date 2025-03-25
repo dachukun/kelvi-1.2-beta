@@ -99,13 +99,13 @@ export default function Generate() {
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Tabs */}
         <div className="card p-4">
-          <div className="flex space-x-4 border-b border-golden-light/20 pb-4">
+          <div className="flex space-x-4 border-b border-indigo-light/20 pb-4">
             <button
               onClick={() => setActiveTab('details')}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 activeTab === 'details'
-                  ? 'bg-golden-gradient text-white'
-                  : 'hover:bg-golden-light/10'
+                  ? 'bg-indigo-gradient text-white'
+                  : 'hover:bg-indigo-light/10'
               }`}
             >
               Paper Details
@@ -114,8 +114,8 @@ export default function Generate() {
               onClick={() => setActiveTab('preview')}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 activeTab === 'preview'
-                  ? 'bg-golden-gradient text-white'
-                  : 'hover:bg-golden-light/10'
+                  ? 'bg-indigo-gradient text-white'
+                  : 'hover:bg-indigo-light/10'
               }`}
             >
               Preview
@@ -127,7 +127,7 @@ export default function Generate() {
           <div className="space-y-6">
             {/* Basic Details */}
             <div className="card space-y-4">
-              <h2 className="text-2xl font-semibold bg-golden-gradient text-transparent bg-clip-text">
+              <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
                 Basic Details
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -190,12 +190,12 @@ export default function Generate() {
             {/* Chapters */}
             <div className="card space-y-4">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold bg-golden-gradient text-transparent bg-clip-text">
+                <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
                   Chapters
                 </h2>
                 <button
                   onClick={addChapter}
-                  className="golden-button"
+                  className="indigo-button"
                 >
                   Add Chapter
                 </button>
@@ -222,7 +222,7 @@ export default function Generate() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-golden-light/20">
+                    <tr className="border-b border-indigo-light/20">
                       <th className="py-2 px-4 text-left">Chapter Name</th>
                       <th className="py-2 px-4 text-center">1 Mark</th>
                       <th className="py-2 px-4 text-center">2 Marks</th>
@@ -235,7 +235,7 @@ export default function Generate() {
                   </thead>
                   <tbody>
                     {formData.chapters.map((chapter, index) => (
-                      <tr key={index} className="border-b border-golden-light/20">
+                      <tr key={index} className="border-b border-indigo-light/20">
                         <td className="py-2 px-4">
                           <input
                             type="text"
@@ -270,7 +270,7 @@ export default function Generate() {
                       </tr>
                     ))}
                     {formData.chapters.length > 0 && (
-                      <tr className="bg-golden-light/5">
+                      <tr className="bg-indigo-light/5">
                         <td className="py-2 px-4 font-semibold">Total Marks</td>
                         <td colSpan={7} className="py-2 px-4 text-right font-semibold">
                           {calculateTotalMarks()}
@@ -286,7 +286,7 @@ export default function Generate() {
             <div className="card">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">Total Marks</h2>
-                <span className="text-3xl font-bold bg-golden-gradient text-transparent bg-clip-text">
+                <span className="text-3xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
                   {calculateTotalMarks()}
                 </span>
               </div>
@@ -294,7 +294,7 @@ export default function Generate() {
 
             {/* Generate Paper Button */}
             <button
-              className="golden-button w-full py-4 text-lg font-semibold"
+              className="indigo-button w-full py-4 text-lg font-semibold"
               onClick={() => {
                 try {
                   // Validate form data
@@ -337,10 +337,10 @@ ${formData.chapters.map((chapter, index) => {
           </div>
         ) : (
           <div className="card space-y-4">
-            <h2 className="text-2xl font-semibold bg-golden-gradient text-transparent bg-clip-text">
+            <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
               Paper Preview
             </h2>
-            <div className="min-h-[500px] border border-golden-light/20 rounded-lg p-6 overflow-auto whitespace-pre-wrap">
+            <div className="min-h-[500px] border border-indigo-light/20 rounded-lg p-6 overflow-auto whitespace-pre-wrap">
               {generatedPaper ? (
                 <div className="prose max-w-none">{generatedPaper}</div>
               ) : (
@@ -350,7 +350,7 @@ ${formData.chapters.map((chapter, index) => {
               )}
             </div>
             <button 
-              className="golden-button w-full" 
+              className="indigo-button w-full" 
               disabled={!generatedPaper}
               onClick={() => {
                 // TODO: Implement PDF download functionality

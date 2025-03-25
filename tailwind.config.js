@@ -9,11 +9,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'golden-light': '#FFD700',
-        'golden-dark': '#B8860B',
+        'indigo-light': '#6366F1',
+        'cream': '#D4B08C',
+        'glass': 'rgba(30, 41, 59, 0.6)',
       },
       backgroundImage: {
-        'golden-gradient': 'linear-gradient(to right, #FFD700, #B8860B)',
+        'indigo-gradient': 'linear-gradient(to right, #6366F1, #D4B08C)',
+      },
+      backdropBlur: {
+        'glass': '12px',
       },
       borderRadius: {
         'xl': '1rem',

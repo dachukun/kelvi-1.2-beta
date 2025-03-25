@@ -79,7 +79,7 @@ export default function Support() {
     <main className="min-h-screen flowing-background p-4 pb-20 md:p-8 md:pb-24">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="card">
-          <h1 className="text-3xl font-bold bg-golden-gradient text-transparent bg-clip-text mb-4">
+          <h1 className="text-3xl font-bold bg-indigo-gradient text-transparent bg-clip-text mb-4">
             Support
           </h1>
 
@@ -144,7 +144,7 @@ export default function Support() {
 
             <button
               type="submit"
-              className="golden-button w-full"
+              className="indigo-button w-full"
               disabled={loading}
             >
               {loading ? 'Sending...' : 'Send Message'}
@@ -154,18 +154,18 @@ export default function Support() {
 
         {/* FAQs Section */}
         <div className="card space-y-4">
-          <h2 className="text-2xl font-semibold bg-golden-gradient text-transparent bg-clip-text">
+          <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
             Frequently Asked Questions
           </h2>
           <div className="space-y-2">
             {faqs.map((faq, index) => (
-              <div key={index} className="border border-golden-light/20 rounded-lg overflow-hidden">
+              <div key={index} className="border border-indigo-light/20 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                  className="w-full p-4 text-left flex justify-between items-center hover:bg-golden-light/10 transition-colors"
+                  className="w-full p-4 text-left flex justify-between items-center hover:bg-indigo-light/10 transition-colors"
                 >
                   <span className="font-medium">{faq.question}</span>
-                  <span className="text-golden-dark">
+                  <span className="text-cream">
                     {expandedFaq === index ? '−' : '+'}
                   </span>
                 </button>
@@ -189,7 +189,7 @@ export default function Support() {
           </p>
           <button
             onClick={handleLogout}
-            className="golden-button"
+            className="indigo-button"
           >
             Logout
           </button>

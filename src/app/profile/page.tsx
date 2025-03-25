@@ -43,7 +43,7 @@ export default function Profile() {
           <span className="text-gray-600">Switch Appearance</span>
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-golden-light/10 transition-colors"
+            className="p-2 rounded-full hover:bg-indigo-light/10 transition-colors"
             aria-label="Toggle theme"
           >
             {theme === 'light' ? <FiMoon size={24} /> : <FiSun size={24} />}
@@ -52,12 +52,12 @@ export default function Profile() {
 
         {/* Profile Header with Avatar */}
         <div className="card flex flex-col items-center p-8">
-          <div className="w-24 h-24 rounded-full bg-golden-gradient flex items-center justify-center mb-4 transform hover:scale-105 transition-transform">
+          <div className="w-24 h-24 rounded-full bg-indigo-gradient flex items-center justify-center mb-4 transform hover:scale-105 transition-transform">
             <span className="text-4xl font-bold text-white">
               {getInitial(user?.user_metadata?.name || '')}
             </span>
           </div>
-          <h1 className="text-3xl font-bold bg-golden-gradient text-transparent bg-clip-text">
+          <h1 className="text-3xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
             {user?.user_metadata?.name || 'Student'}
           </h1>
         </div>
@@ -82,9 +82,9 @@ export default function Profile() {
           <h2 className="text-xl font-semibold">Achievements</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Streak Achievement */}
-            <div className="p-4 rounded-lg border border-golden-light hover:bg-golden-light/10 transition-colors">
+            <div className="p-4 rounded-lg border border-indigo-light hover:bg-indigo-light/10 transition-colors">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-full bg-golden-gradient flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-indigo-gradient flex items-center justify-center">
                   <span className="text-2xl">🔥</span>
                 </div>
                 <div>
@@ -94,9 +94,9 @@ export default function Profile() {
               </div>
             </div>
             {/* Questions Answered Achievement */}
-            <div className="p-4 rounded-lg border border-golden-light hover:bg-golden-light/10 transition-colors">
+            <div className="p-4 rounded-lg border border-indigo-light hover:bg-indigo-light/10 transition-colors">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-full bg-golden-gradient flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-indigo-gradient flex items-center justify-center">
                   <span className="text-2xl">✨</span>
                 </div>
                 <div>

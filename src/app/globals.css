@@ -3,25 +3,28 @@
 @import 'tailwindcss/utilities';
 
 :root {
-  --golden-light: #FFD700;
-  --golden-dark: #B8860B;
+  --golden-light: #6366F1;
+  --golden-dark: #D4B08C;
   --golden-gradient: linear-gradient(to right, var(--golden-light), var(--golden-dark));
-  --background-color: #ffffff;
-  --navbar-color: #ffffff;
+  --indigo-gradient: linear-gradient(to right, #6366F1, #D4B08C);
+  --background-color: transparent;
+  --navbar-color: rgba(99, 102, 241, 0.1);
 }
 
 .dark {
-  --golden-light: #B8860B;
-  --golden-dark: #FFD700;
+  --golden-light: #4F46E5;
+  --golden-dark: #C4A484;
   --golden-gradient: linear-gradient(to right, var(--golden-dark), var(--golden-light));
   --background-color: #121212;
-  --navbar-color: #1a1a1a;
+  --navbar-color: rgba(26, 26, 26, 0.8);
 }
 
 .dark .card {
-  background-color: #1a1a1a;
+  background-color: rgba(30, 41, 59, 0.6);
   color: #ffffff;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(99, 102, 241, 0.15);
 }
 
 .dark .input-field {
@@ -39,16 +42,16 @@
 }
 
 @layer components {
-  .golden-button {
+  .golden-button, .indigo-button {
     background-image: var(--golden-gradient);
     color: white;
     font-weight: 600;
     padding: 0.5rem 1.5rem;
     border-radius: 0.75rem;
-    box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 15px rgba(218, 165, 32, 0.4);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
       opacity: 0.95;
     }
     transition: all 300ms ease-in-out;
@@ -79,7 +82,7 @@
     position: absolute;
     width: 12rem;
     height: 0.2rem;
-    background-image: var(--golden-gradient);
+    background-image: var(--indigo-gradient);
     opacity: 0.15;
     border-radius: 9999px;
     filter: blur(2px);
@@ -105,15 +108,15 @@
   background: linear-gradient(
     45deg,
     transparent 45%,
-    rgba(255, 215, 0, 0.08) 49%,
-    rgba(184, 134, 11, 0.08) 51%,
+    rgba(255, 255, 255, 0.05) 49%,
+    rgba(99, 102, 241, 0.08) 51%,
     transparent 55%
   );
   transform-origin: center;
   will-change: transform;
   animation: flow 15s linear infinite;
   z-index: -1;
-  filter: blur(3px);
+  filter: blur(8px);
 }
 
 .flowing-background::after {
