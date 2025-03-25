@@ -97,6 +97,7 @@ export default function Generate() {
   return (
     <main className="min-h-screen flowing-background p-4 pb-20 md:p-8 md:pb-24">
       <div className="max-w-6xl mx-auto space-y-6">
+        <h1 className="ka-text-box text-3xl font-bold text-center bg-indigo-gradient text-transparent bg-clip-text">Powered by Ka1.2</h1>
         {/* Tabs */}
         <div className="card p-4">
           <div className="flex space-x-4 border-b border-indigo-light/20 pb-4">

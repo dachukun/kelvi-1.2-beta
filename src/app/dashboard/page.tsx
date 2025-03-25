@@ -169,11 +169,11 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="card">
           <div className="flex items-center justify-between gap-4">
-            <h1 className="text-3xl font-bold bg-golden-gradient text-transparent bg-clip-text">
+            <h1 className="text-3xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
               Welcome back, {user?.user_metadata?.name || 'Student'}!
             </h1>
             <div className="w-16 h-16 rounded-full border-2 border-golden-light/30 flex items-center justify-center bg-gradient-to-br from-golden-light/10 to-golden-dark/10">
-              <span className="text-2xl font-bold bg-golden-gradient text-transparent bg-clip-text">
+              <span className="text-2xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
                 {(user?.user_metadata?.name || 'S').charAt(0).toUpperCase()}
               </span>
             </div>
@@ -186,6 +186,24 @@ export default function Dashboard() {
         </div>
 
         {/* Streak Card */}
+        <div className="card p-6 transform transition-all duration-300 hover:scale-[1.02]">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
+              Learning Streak
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold bg-indigo-gradient text-transparent bg-clip-text">{streak}</span>
+              <span className="text-2xl animate-bounce-subtle">🔥</span>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 mt-2">
+            {streak === 0
+              ? "Start your streak by answering correctly!"
+              : streak === 1
+              ? "Great start! Keep going!"
+              : `You're on fire! ${streak} today and counting!`}
+          </p>
+        </div>
         <StreakCard streak={streak} />
 
         {/* Quiz Section */}
