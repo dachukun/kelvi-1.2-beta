@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase';
-import BottomNav from '../dashboard/components/BottomNav';
+import BottomNav from '../components/BottomNav';
 
 export default function Support() {
   const [formData, setFormData] = useState({
@@ -184,6 +184,9 @@ export default function Support() {
           <h2 className="text-2xl font-semibold text-gray-700">
             Sorry to see you go...
           </h2>
+          <p className="ka-text-box text-sm text-center bg-indigo-gradient text-transparent bg-clip-text mt-1">
+            Powered by Ka1.2
+          </p>
           <p className="text-gray-600">
             If you need to leave, you can safely log out below. We hope to see you again soon!
           </p>

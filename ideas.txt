@@ -1,0 +1,5 @@
+#multi menu option
+generate
+doubt solver
+paper analysis
+homework assistance

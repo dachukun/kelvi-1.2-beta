@@ -12,7 +12,7 @@ export default function StreakCard({ streak }: StreakCardProps) {
           Learning Streak
         </h2>
         <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold">{streak}</span>
+          <span className="text-2xl font-bold gradient-text">{streak}</span>
           <span className="text-2xl animate-bounce-subtle">🔥</span>
         </div>
       </div>

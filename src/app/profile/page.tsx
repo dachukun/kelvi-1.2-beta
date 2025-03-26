@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '../providers/ThemeProvider';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import { supabase } from '@/utils/supabase';
-import BottomNav from '../dashboard/components/BottomNav';
+import BottomNav from '../components/BottomNav';
 
 export default function Profile() {
   const [user, setUser] = useState<any>(null);

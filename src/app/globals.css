@@ -169,7 +169,7 @@
   50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.6), 0 0 50px rgba(99, 102, 241, 0.3); }
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .gradient-text {
   background-image: var(--golden-gradient);
   -webkit-background-clip: text;
   background-clip: text;
