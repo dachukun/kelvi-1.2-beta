@@ -8,9 +8,7 @@ export default function StreakCard({ streak }: StreakCardProps) {
   return (
     <div className="card p-6 transform transition-all duration-300 hover:scale-[1.02]">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold bg-golden-gradient text-transparent bg-clip-text">
-          Learning Streak
-        </h2>
+        <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">Learning Streak</h2>
         <div className="flex items-center gap-2">
           <span className="text-2xl font-bold gradient-text">{streak}</span>
           <span className="text-2xl animate-bounce-subtle">🔥</span>

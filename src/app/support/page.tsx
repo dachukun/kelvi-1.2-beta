@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase';
-import BottomNav from '../components/BottomNav';
+import FloatingMenu from '../dashboard/components/BottomNav';
 
 export default function Support() {
   const [formData, setFormData] = useState({
@@ -201,7 +201,7 @@ export default function Support() {
 
       <div className="flowing-line" style={{ top: '15%', right: '10%' }} />
       <div className="flowing-line" style={{ bottom: '20%', left: '10%', animationDelay: '1s' }} />
-      <BottomNav />
+      <FloatingMenu />
     </main>
   );
 }

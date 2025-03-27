@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '../providers/ThemeProvider';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import { supabase } from '@/utils/supabase';
-import BottomNav from '../components/BottomNav';
+import FloatingMenu from '../dashboard/components/BottomNav';
 
 export default function Profile() {
   const [user, setUser] = useState<any>(null);
@@ -111,7 +111,7 @@ export default function Profile() {
 
       <div className="flowing-line" style={{ top: '15%', right: '10%' }} />
       <div className="flowing-line" style={{ bottom: '20%', left: '10%', animationDelay: '1s' }} />
-      <BottomNav />
+      <FloatingMenu />
     </main>
   );
 }
