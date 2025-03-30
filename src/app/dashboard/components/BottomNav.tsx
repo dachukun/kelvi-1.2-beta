@@ -3,6 +3,40 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+const HomeworkIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
+    <defs>
+      <linearGradient id="homeworkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="currentColor" stopOpacity="0.2"/>
+        <stop offset="100%" stopColor="currentColor" stopOpacity="1"/>
+      </linearGradient>
+    </defs>
+    {/* Open book base */}
+    <path d="M4 6C4 4.89543 4.89543 4 6 4H18C19.1046 4 20 4.89543 20 6V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V6Z" stroke="url(#homeworkGradient)" strokeWidth="1.5" strokeLinejoin="round"/>
+    {/* Book spine */}
+    <path d="M12 4V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+    </path>
+    {/* Left page lines */}
+    <path d="M7 8H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.2s"/>
+    </path>
+    <path d="M7 12H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.4s"/>
+    </path>
+    {/* Right page lines */}
+    <path d="M14 8H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.6s"/>
+    </path>
+    <path d="M14 12H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.8s"/>
+    </path>
+    {/* Pencil */}
+    <path d="M8 16L10 18L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <animate attributeName="strokeDasharray" values="20;10;20" dur="2s" repeatCount="indefinite"/>
+    </path>
+  </svg>
+);
 
 const HomeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -26,13 +60,12 @@ const SupportIcon = () => (
 const ExperimentsIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
     <defs>
-      <linearGradient id="sparkleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient id="networkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="currentColor" stopOpacity="0.2"/>
-        <stop offset="50%" stopColor="currentColor" stopOpacity="0.8"/>
         <stop offset="100%" stopColor="currentColor" stopOpacity="1"/>
       </linearGradient>
       <filter id="glow">
-        <feGaussianBlur stdDeviation="0.8" result="blur"/>
+        <feGaussianBlur stdDeviation="1" result="blur"/>
         <feMerge>
           <feMergeNode in="blur"/>
           <feMergeNode in="SourceGraphic"/>
@@ -40,34 +73,32 @@ const ExperimentsIcon = () => (
       </filter>
     </defs>
     <g filter="url(#glow)">
-      {/* Center sparkle */}
-      <circle cx="12" cy="12" r="2" fill="currentColor">
+      {/* Neural Network Nodes */}
+      <circle cx="12" cy="6" r="2" fill="currentColor">
         <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
       </circle>
-      {/* Sparkle rays */}
-      <g transform="rotate(0 12 12)">
-        <path d="M12 5L12 8M12 16L12 19M5 12L8 12M16 12L19 12" stroke="url(#sparkleGradient)" strokeWidth="1.5" strokeLinecap="round">
-          <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
-        </path>
-      </g>
-      <g transform="rotate(45 12 12)">
-        <path d="M12 5L12 8M12 16L12 19M5 12L8 12M16 12L19 12" stroke="url(#sparkleGradient)" strokeWidth="1.5" strokeLinecap="round">
-          <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" begin="0.2s"/>
-        </path>
-      </g>
-      {/* Outer sparkles */}
-      <circle cx="12" cy="6" r="1" fill="currentColor">
-        <animate attributeName="r" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+      <circle cx="6" cy="12" r="2" fill="currentColor">
+        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.3s"/>
       </circle>
-      <circle cx="12" cy="18" r="1" fill="currentColor">
-        <animate attributeName="r" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+      <circle cx="18" cy="12" r="2" fill="currentColor">
+        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.6s"/>
       </circle>
-      <circle cx="6" cy="12" r="1" fill="currentColor">
-        <animate attributeName="r" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+      <circle cx="12" cy="18" r="2" fill="currentColor">
+        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.9s"/>
       </circle>
-      <circle cx="18" cy="12" r="1" fill="currentColor">
-        <animate attributeName="r" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+      
+      {/* Neural Network Connections */}
+      <path d="M12 8L6 10M12 8L18 10M6 14L12 16M18 14L12 16" stroke="url(#networkGradient)" strokeWidth="1.5" strokeLinecap="round">
+        <animate attributeName="stroke-dasharray" values="1,3;3,1" dur="1s" repeatCount="indefinite"/>
+      </path>
+      
+      {/* Data Flow Animation */}
+      <circle cx="0" cy="0" r="1" fill="currentColor">
+        <animateMotion path="M12 8L6 10" dur="1.5s" repeatCount="indefinite">
+          <mpath href="#flow-path"/>
+        </animateMotion>
       </circle>
+      <path id="flow-path" d="M12 8L6 10M12 8L18 10M6 14L12 16M18 14L12 16" stroke="none"/>
     </g>
   </svg>
 );
@@ -81,7 +112,7 @@ const GenerateIcon = () => (
         <stop offset="100%" stopColor="currentColor" stopOpacity="1"/>
       </linearGradient>
       <filter id="glow">
-        <feGaussianBlur stdDeviation="1.2" result="blur"/>
+        <feGaussianBlur stdDeviation="1" result="blur"/>
         <feMerge>
           <feMergeNode in="blur"/>
           <feMergeNode in="SourceGraphic"/>
@@ -89,38 +120,17 @@ const GenerateIcon = () => (
       </filter>
     </defs>
     <g filter="url(#glow)">
-      {/* Center sparkle */}
-      <circle cx="12" cy="12" r="1.5" fill="currentColor">
-        <animate attributeName="r" values="1;2;1" dur="1.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="1;0.6;1" dur="1.5s" repeatCount="indefinite"/>
+      <path d="M12 3L14 9L20 9L15 13L17 19L12 15L7 19L9 13L4 9L10 9L12 3Z" stroke="url(#sparkleGradient)" strokeWidth="1.5" strokeLinejoin="round" fill="none">
+        <animate attributeName="stroke-dasharray" values="60;30;60" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <circle cx="12" cy="12" r="1" fill="currentColor">
+        <animate attributeName="r" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
       </circle>
-      {/* Sparkle rays */}
-      <g transform="rotate(0 12 12)">
-        <path d="M12 4L12 8M12 16L12 20M4 12L8 12M16 12L20 12" stroke="url(#sparkleGradient)" strokeWidth="2" strokeLinecap="round">
-          <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
-          <animate attributeName="strokeWidth" values="2;1;2" dur="2s" repeatCount="indefinite"/>
-        </path>
-      </g>
       <g transform="rotate(45 12 12)">
-        <path d="M12 4L12 8M12 16L12 20M4 12L8 12M16 12L20 12" stroke="url(#sparkleGradient)" strokeWidth="2" strokeLinecap="round">
-          <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" begin="0.5s"/>
-          <animate attributeName="strokeWidth" values="2;1;2" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+        <path d="M12 7L12 9M12 15L12 17M7 12L9 12M15 12L17 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <animate attributeName="opacity" values="1;0;1" dur="1.5s" repeatCount="indefinite"/>
         </path>
-      </g>
-      {/* Outer sparkles */}
-      <g transform="rotate(22.5 12 12)">
-        <circle cx="12" cy="5" r="1" fill="currentColor">
-          <animate attributeName="r" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="12" cy="19" r="1" fill="currentColor">
-          <animate attributeName="r" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="5" cy="12" r="1" fill="currentColor">
-          <animate attributeName="r" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
-        </circle>
-        <circle cx="19" cy="12" r="1" fill="currentColor">
-          <animate attributeName="r" values="1;0.5;1" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
-        </circle>
       </g>
     </g>
   </svg>
@@ -128,27 +138,46 @@ const GenerateIcon = () => (
 
 const DoubtSolverIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
-    <g>
-      <path d="M12 4C8 4 4 7 4 12C4 16 7 20 12 20C17 20 20 16 20 12C20 7 16 4 12 4Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 8C10 8 8 9 8 12M12 8C14 8 16 9 16 12M12 16C10 16 8 15 8 12M12 16C14 16 16 15 16 12" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1 2"/>
-      <circle cx="12" cy="8" r="0.5" fill="currentColor"/>
-      <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
-      <circle cx="8" cy="12" r="0.5" fill="currentColor"/>
-      <circle cx="16" cy="12" r="0.5" fill="currentColor"/>
-    </g>
+    <defs>
+      <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="currentColor" stopOpacity="0.2"/>
+        <stop offset="100%" stopColor="currentColor" stopOpacity="1"/>
+      </linearGradient>
+    </defs>
+    <path d="M12 4C7 4 4 7.5 4 11C4 14.5 6 16 8 16.5C8 17.5 7 19 7 19C11 19 12 16.5 12 16.5C12 16.5 13 19 17 19C17 19 16 17.5 16 16.5C18 16 20 14.5 20 11C20 7.5 17 4 12 4Z" stroke="url(#brainGradient)" strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M9 11C9 11 10 12 12 12C14 12 15 11 15 11" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="d" values="M9 11C9 11 10 12 12 12C14 12 15 11 15 11;M9 10C9 10 10 11 12 11C14 11 15 10 15 10;M9 11C9 11 10 12 12 12C14 12 15 11 15 11" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="8" cy="9" r="1" fill="currentColor">
+      <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="16" cy="9" r="1" fill="currentColor">
+      <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
   </svg>
 );
 
 const PaperAnalysisIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
-    <g>
-      <path d="M12 4C8 4 4 7 4 12C4 16 7 20 12 20C17 20 20 16 20 12C20 7 16 4 12 4Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 8C10 8 8 9 8 12M12 8C14 8 16 9 16 12M12 16C10 16 8 15 8 12M12 16C14 16 16 15 16 12" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1 2"/>
-      <circle cx="12" cy="8" r="0.5" fill="currentColor"/>
-      <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
-      <circle cx="8" cy="12" r="0.5" fill="currentColor"/>
-      <circle cx="16" cy="12" r="0.5" fill="currentColor"/>
-    </g>
+    <defs>
+      <linearGradient id="paperGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="currentColor" stopOpacity="0.2"/>
+        <stop offset="100%" stopColor="currentColor" stopOpacity="1"/>
+      </linearGradient>
+    </defs>
+    <path d="M6 3H18V21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3Z" stroke="url(#paperGradient)" strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M8 7H16" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M8 11H16" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+    </path>
+    <path d="M8 15H12" strokeWidth="1.5" strokeLinecap="round">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="1s"/>
+    </path>
+    <path d="M14 13L16 15L14 17" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <animate attributeName="transform" type="translate" values="0,0;1,0;0,0" dur="1s" repeatCount="indefinite"/>
+    </path>
   </svg>
 );
 
@@ -157,11 +186,11 @@ export default function BottomNav() {
   const [isExperimentsOpen, setIsExperimentsOpen] = useState(false);
 
   return (
-    <nav className="fixed bottom-4 left-4 right-4 z-50">
+    <nav className="fixed bottom-4 left-4 right-4 z-50 animate-slide-up">
       <div className="max-w-4xl mx-auto">
-        <div className="backdrop-blur-md border border-indigo-light/20 rounded-2xl overflow-hidden" style={{ backgroundColor: 'var(--navbar-color)' }}>
+        <div className="backdrop-blur-md border border-indigo-light/20 rounded-2xl overflow-hidden animate-fade-in" style={{ backgroundColor: 'var(--navbar-color)' }}>
           {isExperimentsOpen && (
-            <div className="p-4 border-b border-indigo-light/20">
+            <div className="p-4 border-b border-indigo-light/20 animate-fade-in">
               <div className="grid grid-cols-2 gap-4">
                 <Link
                   href="/generate"
@@ -181,11 +210,19 @@ export default function BottomNav() {
                 </Link>
                 <Link
                   href="/paper-analysis"
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${pathname === '/generate' ? 'bg-indigo-light/20 text-cream' : 'text-gray-500 hover:bg-indigo-light/10 hover:text-indigo-light'}`}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${pathname === '/paper-analysis' ? 'bg-indigo-light/20 text-cream' : 'text-gray-500 hover:bg-indigo-light/10 hover:text-indigo-light'}`}
                   onClick={() => setIsExperimentsOpen(false)}
                 >
                   <PaperAnalysisIcon />
                   <span className="text-sm font-medium">Paper Analysis</span>
+                </Link>
+                <Link
+                  href="/homework-assistance"
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${pathname === '/homework-assistance' ? 'bg-indigo-light/20 text-cream' : 'text-gray-500 hover:bg-indigo-light/10 hover:text-indigo-light'}`}
+                  onClick={() => setIsExperimentsOpen(false)}
+                >
+                  <HomeworkIcon />
+                  <span className="text-sm font-medium">Homework Help</span>
                 </Link>
               </div>
             </div>
