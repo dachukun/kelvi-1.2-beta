@@ -198,7 +198,7 @@ export default function BottomNav() {
                   onClick={() => setIsExperimentsOpen(false)}
                 >
                   <GenerateIcon />
-                  <span className="text-sm font-medium">Generate</span>
+                  <span className="text-sm font-medium">Generate your question paper</span>
                 </Link>
                 <Link
                   href="/doubt-solver"
@@ -214,7 +214,7 @@ export default function BottomNav() {
                   onClick={() => setIsExperimentsOpen(false)}
                 >
                   <PaperAnalysisIcon />
-                  <span className="text-sm font-medium">Paper Analysis</span>
+                  <span className="text-sm font-medium">Analyse answer sheet</span>
                 </Link>
                 <Link
                   href="/homework-assistance"

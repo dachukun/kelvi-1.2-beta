@@ -4,15 +4,22 @@ import { useState } from 'react';
 import FloatingMenu from '../dashboard/components/BottomNav';
 
 export default function DoubtSolver() {
-  const [question, setQuestion] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  const [formData, setFormData] = useState({
+    grade: '',
+    subject: '',
+    question: '',
+    image: null as File | null
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [solution, setSolution] = useState('');
 
+  const grades = ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
+  const subjects = ['Mathematics', 'Science', 'English', 'Social Studies'];
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+      setFormData(prev => ({ ...prev, image: e.target.files![0] }));
     }
   };
 
@@ -22,8 +29,14 @@ export default function DoubtSolver() {
     setError('');
     setSolution('');
 
-    if (!question.trim()) {
-      setError('Please enter your question');
+    if (!formData.grade || !formData.subject) {
+      setError('Please select both grade and subject');
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.question.trim() && !formData.image) {
+      setError('Please either enter a question or upload an image');
       setLoading(false);
       return;
     }
@@ -48,21 +61,59 @@ export default function DoubtSolver() {
             Doubt Solver
           </h1>
           <p className="ka-text-box text-sm text-center bg-indigo-gradient text-transparent bg-clip-text">
-            Powered by Ka1.2
+            Powered by Ka1.2 reasoner
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <p className="text-sm text-gray-600 mb-4">Either describe question or upload PDF only</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-1">
+                  Grade
+                </label>
+                <select
+                  id="grade"
+                  value={formData.grade}
+                  onChange={(e) => setFormData(prev => ({ ...prev, grade: e.target.value }))}
+                  className="input-field"
+                  required
+                >
+                  <option value="">Select Grade</option>
+                  {grades.map(grade => (
+                    <option key={grade} value={grade}>{grade}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                  Subject
+                </label>
+                <select
+                  id="subject"
+                  value={formData.subject}
+                  onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                  className="input-field"
+                  required
+                >
+                  <option value="">Select Subject</option>
+                  {subjects.map(subject => (
+                    <option key={subject} value={subject}>{subject}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div>
               <label htmlFor="question" className="block text-sm font-medium text-gray-700 mb-1">
-                Your Question
+                Your Question (Optional)
               </label>
               <textarea
                 id="question"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
+                value={formData.question}
+                onChange={(e) => setFormData(prev => ({ ...prev, question: e.target.value }))}
                 className="input-field min-h-[100px]"
                 placeholder="Type your question here..."
-                required
               />
             </div>
 
@@ -97,18 +148,18 @@ export default function DoubtSolver() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
-                        accept="image/*"
+                        accept="application/pdf"
                         onChange={handleImageChange}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF up to 10MB
+                    PDF files up to 10MB
                   </p>
-                  {image && (
+                  {formData.image && (
                     <p className="text-sm text-indigo-light">
-                      Selected: {image.name}
+                      Selected: {formData.image.name}
                     </p>
                   )}
                 </div>

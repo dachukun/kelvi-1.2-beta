@@ -42,6 +42,12 @@ export default function HomeworkAssistance() {
       return;
     }
 
+    if (!question.trim() && !image) {
+      setError('Please either enter a question or upload an image');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Here you would typically send the question, grade, subject and image to your backend
       // For now, we'll just simulate a processing delay
@@ -66,6 +72,7 @@ export default function HomeworkAssistance() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <p className="text-sm text-gray-600 mb-4">Either describe question or upload PDF only</p>
             <div>
               <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-1">
                 Grade
@@ -78,11 +85,6 @@ export default function HomeworkAssistance() {
                 required
               >
                 <option value="">Select Grade</option>
-                <option value="1">Grade 1</option>
-                <option value="2">Grade 2</option>
-                <option value="3">Grade 3</option>
-                <option value="4">Grade 4</option>
-                <option value="5">Grade 5</option>
                 <option value="6">Grade 6</option>
                 <option value="7">Grade 7</option>
                 <option value="8">Grade 8</option>
@@ -106,19 +108,16 @@ export default function HomeworkAssistance() {
               >
                 <option value="">Select Subject</option>
                 <option value="mathematics">Mathematics</option>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-                <option value="biology">Biology</option>
+                <option value="science">Science</option>
                 <option value="english">English</option>
-                <option value="history">History</option>
-                <option value="geography">Geography</option>
+                <option value="social_science">Social Science</option>
                 <option value="computer_science">Computer Science</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="question" className="block text-sm font-medium text-gray-700 mb-1">
-                Your Question
+                Your Question (Optional)
               </label>
               <textarea
                 id="question"
@@ -126,7 +125,6 @@ export default function HomeworkAssistance() {
                 onChange={(e) => setQuestion(e.target.value)}
                 className="input-field min-h-[100px]"
                 placeholder="Type your homework question here..."
-                required
               />
             </div>
 
@@ -161,14 +159,14 @@ export default function HomeworkAssistance() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
-                        accept="image/*"
+                        accept="application/pdf"
                         onChange={handleImageChange}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF up to 10MB
+                    PDF files up to 10MB
                   </p>
                   {image && (
                     <p className="text-sm text-indigo-light">
