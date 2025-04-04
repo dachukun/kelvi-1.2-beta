@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import OpenAI from 'openai';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 import FloatingMenu from '../dashboard/components/BottomNav';
 
 export default function PaperAnalysis() {
@@ -11,6 +14,17 @@ export default function PaperAnalysis() {
     questionPaper: null as File | null,
     answerSheet: null as File | null
   });
+
+  const openai = new OpenAI({
+    baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL || "https://openrouter.ai/api/v1",
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    defaultHeaders: {
+      "HTTP-Referer": process.env.NEXT_PUBLIC_OPENAI_HTTP_REFERER || "https://kelvi.ai",
+      "X-Title": process.env.NEXT_PUBLIC_OPENAI_X_TITLE || "Kelvi AI",
+    },
+    dangerouslyAllowBrowser: true
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [analysis, setAnalysis] = useState('');
@@ -42,12 +56,111 @@ export default function PaperAnalysis() {
       return;
     }
 
+    // Validate file type
+    if (formData.answerSheet && !formData.answerSheet.type.includes('pdf') && !formData.answerSheet.type.includes('image')) {
+      setError('Please upload an image file or PDF file for the answer sheet');
+      setLoading(false);
+      return;
+    }
+
+    // Check file size (10MB limit)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+    if (formData.answerSheet && formData.answerSheet.size > MAX_FILE_SIZE) {
+      setError('Answer sheet file size must be less than 10MB');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.questionPaper) {
+      // Validate question paper file type
+      if (!formData.questionPaper.type.includes('pdf') && !formData.questionPaper.type.includes('image')) {
+        setError('Please upload an image file or PDF file for the question paper');
+        setLoading(false);
+        return;
+      }
+
+      // Check question paper file size
+      if (formData.questionPaper.size > MAX_FILE_SIZE) {
+        setError('Question paper file size must be less than 10MB');
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
-      // Here you would typically send the image and metadata to your backend
-      // For now, we'll just simulate a processing delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setAnalysis('This is a sample analysis. In the actual implementation, this would be replaced with the AI-generated analysis of the answer sheet.');
+      let prompt = `As an experienced ${formData.subject} teacher for grade ${formData.grade}, please analyze this answer sheet and provide detailed feedback:\n\n`;
+
+      if (formData.question.trim()) {
+        prompt += `Question: ${formData.question}\n\n`;
+      }
+
+      if (formData.questionPaper) {
+        const reader = new FileReader();
+        const questionPaperData = await new Promise((resolve, reject) => {
+          reader.onload = (e) => resolve(e.target?.result);
+          reader.onerror = () => reject(new Error('Failed to read question paper file'));
+          reader.readAsDataURL(formData.questionPaper as Blob);
+        }).catch(error => {
+          throw new Error('Failed to process question paper: ' + error.message);
+        });
+        prompt += `Question Paper Content: ${questionPaperData}\n\n`;
+      }
+
+      if (formData.answerSheet) {
+        const reader = new FileReader();
+        const answerSheetData = await new Promise((resolve, reject) => {
+          reader.onload = (e) => resolve(e.target?.result);
+          reader.onerror = () => reject(new Error('Failed to read answer sheet file'));
+          reader.readAsDataURL(formData.answerSheet as Blob);
+        }).catch(error => {
+          throw new Error('Failed to process answer sheet: ' + error.message);
+        });
+        prompt += `Answer Sheet Content: ${answerSheetData}`;
+      }
+
+      prompt += `\n\nPlease provide a comprehensive analysis with the following aspects:
+1. Understanding of concepts
+2. Accuracy of calculations (use LaTeX for mathematical expressions, e.g. $\\sin \\theta$)
+3. Presentation and organization
+4. Areas for improvement
+5. Overall grade and score breakdown`;
+
+      const completion = await openai.chat.completions.create({
+        model: "deepseek/deepseek-r1:free",
+        messages: [
+          {
+            "role": "user",
+            "content": prompt
+          }
+        ],
+      });
+
+      const analysisText = completion.choices[0].message.content;
+      if (!analysisText) throw new Error('No analysis generated');
+
+      // Process the analysis to render LaTeX expressions
+      let processedAnalysis = analysisText;
+      
+      // Replace LaTeX delimiters with rendered math
+      processedAnalysis = processedAnalysis.replace(/\$\$([^$]+)\$\$/g, (_, tex) => {
+        try {
+          return katex.renderToString(tex, { displayMode: true });
+        } catch (err) {
+          console.error('LaTeX Error:', err);
+          return tex;
+        }
+      }).replace(/\$([^$]+)\$/g, (_, tex) => {
+        try {
+          return katex.renderToString(tex, { displayMode: false });
+        } catch (err) {
+          console.error('LaTeX Error:', err);
+          return tex;
+        }
+      });
+
+      setAnalysis(processedAnalysis);
     } catch (err: any) {
+      console.error('API Error:', err);
       setError('Failed to analyze the answer sheet. Please try again.');
     } finally {
       setLoading(false);
@@ -66,7 +179,7 @@ export default function PaperAnalysis() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <p className="text-sm text-gray-600 mb-4">Either describe question or upload PDF only</p>
+            <p className="text-sm text-gray-600 mb-4">Either describe question or upload an image or PDF file</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-1">
@@ -150,14 +263,14 @@ export default function PaperAnalysis() {
                           name="question-paper-upload"
                           type="file"
                           className="sr-only"
-                          accept="application/pdf"
+                          accept="image/*,.pdf"
                           onChange={handleFileChange('questionPaper')}
                         />
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
                     <p className="text-xs text-gray-500">
-                      PDF files up to 10MB
+                      Image files (PNG, JPEG, GIF) or PDF files up to 10MB
                     </p>
                     {formData.questionPaper && (
                       <p className="text-sm text-indigo-light">
@@ -199,7 +312,7 @@ export default function PaperAnalysis() {
                           name="answer-sheet-upload"
                           type="file"
                           className="sr-only"
-                          accept="application/pdf"
+                          accept="image/*,.pdf"
                           onChange={handleFileChange('answerSheet')}
                           required
                         />
@@ -207,7 +320,7 @@ export default function PaperAnalysis() {
                       <p className="pl-1">or drag and drop</p>
                     </div>
                     <p className="text-xs text-gray-500">
-                      PDF files up to 10MB
+                      Image files (PNG, JPEG, GIF) or PDF files up to 10MB
                     </p>
                     {formData.answerSheet && (
                       <p className="text-sm text-indigo-light">

@@ -169,11 +169,11 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="card">
           <div className="flex items-center justify-between gap-4">
-            <h1 className="text-3xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
+            <h1 className="text-3xl font-bold bg-golden-gradient text-transparent bg-clip-text">
               Welcome back, {user?.user_metadata?.name || 'Student'}!
             </h1>
-            <div className="w-16 h-16 rounded-full border-2 border-indigo-light/30 flex items-center justify-center bg-gradient-to-br from-golden-light/10 to-golden-dark/10">
-              <span className="text-2xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
+            <div className="w-16 h-16 rounded-full border-2 border-golden-light/30 flex items-center justify-center bg-gradient-to-br from-golden-light/10 to-golden-dark/10">
+              <span className="text-2xl font-bold bg-golden-gradient text-transparent bg-clip-text">
                 {(user?.user_metadata?.name || 'S').charAt(0).toUpperCase()}
               </span>
             </div>
