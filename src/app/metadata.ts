@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'KelviAI - till you succeed',
+  title: 'KelviAI',
   description: 'Your Intelligent Learning Assistant',
   icons: {
     icon: '/favicon.svg',

@@ -1,12 +1,55 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import OpenAI from 'openai';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import BottomNav from '../dashboard/components/BottomNav';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import jsPDF from 'jspdf';
+import { openai } from '@/utils/openai';
+
+const calculateTotalMarks = (data: FormData) => {
+  return data.chapters.reduce((total, chapter) => {
+    return total + chapter.questions.reduce((chapterTotal, q) => 
+      chapterTotal + (q.marks * q.count), 0);
+  }, 0);
+};
+
+// Template-based question paper generation
+const generateQuestionTemplate = (formData: FormData) => {
+  const totalMarks = calculateTotalMarks(formData);
+  const currentDate = new Date().toLocaleDateString();
+  
+  let template = `${formData.schoolName}\n`;
+  template += `${formData.subject} Question Paper - Grade ${formData.grade}\n`;
+  template += `Date: ${currentDate}\n`;
+  template += `Total Marks: ${totalMarks}\n\n`;
+  template += `Time: ${Math.ceil(totalMarks/20)} hours\n\n`;
+  template += `General Instructions:\n`;
+  template += `1. All questions are compulsory\n`;
+  template += `2. The question paper consists of ${formData.chapters.length} sections\n`;
+  template += `3. Marks are indicated against each question\n\n`;
+
+  formData.chapters.forEach((chapter, index) => {
+    template += `Section ${String.fromCharCode(65 + index)} - ${chapter.name}\n\n`;
+    
+    let questionNumber = 1;
+    [1, 2, 3, 4, 5, 6].forEach(marks => {
+      const questionsOfMark = chapter.questions.find(q => q.marks === marks);
+      if (questionsOfMark && questionsOfMark.count > 0) {
+        for (let i = 0; i < questionsOfMark.count; i++) {
+          template += `${questionNumber}. Sample question for ${chapter.name} worth ${marks} mark${marks > 1 ? 's' : ''}\n`;
+          if (formData.subject === 'Mathematics') {
+            template += `   $\\frac{x}{2} + y = z$\n`;
+          }
+          template += `   [${marks} mark${marks > 1 ? 's' : ''}]\n\n`;
+          questionNumber++;
+        }
+      }
+    });
+  });
+
+  return template;
+};
 
 type Chapter = {
   name: string;
@@ -92,18 +135,179 @@ export default function Generate() {
     }));
   };
 
-  const calculateTotalMarks = () => {
-    return formData.chapters.reduce((total, chapter) => {
-      return total + chapter.questions.reduce((chapterTotal, q) => 
-        chapterTotal + (q.marks * q.count), 0);
-    }, 0);
+  
+
+  const generatePaper = async () => {
+    try {
+      // Validate form data
+      if (!formData.schoolName.trim()) throw new Error('Please enter school name');
+      if (!formData.grade) throw new Error('Please select grade');
+      if (!formData.subject) throw new Error('Please select subject');
+      if (formData.chapters.length === 0) throw new Error('Please add at least one chapter');
+      if (calculateTotalMarks(formData) === 0) throw new Error('Please add questions to chapters');
+
+      setError('');
+      setLoading(true);
+
+      // Prepare prompt for AI
+      const prompt = `Please generate a moderate level practice question paper with the following details:
+      School: ${formData.schoolName}
+      Subject: ${formData.subject}
+      Grade: ${formData.grade}
+      Total Marks: ${calculateTotalMarks(formData)}
+      Chapters: ${formData.chapters.map(c => c.name).join(', ')}
+
+      Question distribution per chapter:
+      ${formData.chapters.map(chapter => {
+        const questions = chapter.questions
+          .filter(q => q.count > 0)
+          .map(q => `${q.count} questions of ${q.marks} marks each`);
+        return `${chapter.name}: ${questions.join(', ')}`;
+      }).join('\n')}
+
+      Please ensure:
+      1. Questions are grade-appropriate and moderate difficulty
+      2. Clear and precise language
+      3. For Mathematics, include proper mathematical expressions
+      4. Logical progression from easier to harder questions
+      5. Questions test both conceptual understanding and application`;
+
+      // Call OpenAI API
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
+          "HTTP-Referer": window.location.origin,
+          "X-Title": "Kelvi AI",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "model": "deepseek/deepseek-r1:free",
+          "messages": [{
+            "role": "system",
+            "content": "You are an expert teacher who creates high-quality exam papers. Format the output with proper section headers, question numbers, and clear instructions. Include a mix of objective and subjective questions appropriate for the subject and grade level. Use LaTeX for mathematical equations where applicable."
+          }, {
+            "role": "user",
+            "content": prompt
+          }],
+          "temperature": 0.7,
+          "max_tokens": 2000
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || `API request failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const generatedContent = data.choices?.[0]?.message?.content;
+      
+      if (!generatedContent) {
+        throw new Error('Failed to generate paper content');
+      }
+      
+      setGeneratedPaper(generatedContent);
+      // Ensure we switch to preview tab after successful generation
+      setActiveTab('preview');
+    } catch (err: any) {
+      console.error('Generation Error:', err);
+      setError(err.message || 'Failed to generate paper. Please try again.');
+      setGeneratedPaper('');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadPDF = () => {
+    try {
+      const doc = new jsPDF({
+        unit: 'mm',
+        format: 'a4',
+        putOnlyUsedFonts: true
+      });
+
+      const margin = 20;
+      const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
+      const contentWidth = pageWidth - 2 * margin;
+
+      // Add header
+      doc.setFontSize(16);
+      doc.text(formData.schoolName, margin, margin);
+
+      // Add subject and grade
+      doc.setFontSize(14);
+      doc.text(`${formData.subject} - Grade ${formData.grade}`, margin, margin + 10);
+
+      // Add content
+      doc.setFontSize(12);
+      let y = margin + 20;
+
+      // Split content into sections and process LaTeX
+      const sections = generatedPaper.split('\n\n');
+
+      sections.forEach(section => {
+        const lines = doc.splitTextToSize(section, contentWidth);
+        
+        lines.forEach((line: string) => {
+          if (y > pageHeight - margin) {
+            doc.addPage();
+            y = margin;
+          }
+
+          // Check if line contains mathematical content
+          if (line.match(/\$(.*?)\$/)) {
+            // Use special font for mathematical content
+            doc.setFont('Helvetica-Bold', 'normal');
+          } else {
+            doc.setFont('Helvetica', 'normal');
+          }
+
+          doc.text(line.replace(/\$(.*?)\$/g, '$1'), margin, y);
+          y += 7;
+        });
+
+        y += 5; // Add extra space between sections
+      });
+
+      doc.save(`${formData.schoolName.replace(/\s+/g, '_')}_${formData.subject}_${formData.grade}.pdf`);
+    } catch (err) {
+      console.error('PDF Generation Error:', err);
+      setError('Failed to generate PDF. Please try again.');
+    }
+  };
+
+  const renderLatexContent = (content: string) => {
+    return content.split('$').map((part, index) => {
+      if (index % 2 === 0) {
+        return part;
+      }
+      try {
+        return (
+          <span
+            key={index}
+            dangerouslySetInnerHTML={{
+              __html: katex.renderToString(part, {
+                throwOnError: false,
+                displayMode: false
+              })
+            }}
+          />
+        );
+      } catch (err) {
+        console.error('LaTeX Error:', err);
+        return `$${part}$`;
+      }
+    });
   };
 
   return (
     <main className="min-h-screen flowing-background p-4 pb-20 md:p-8 md:pb-24">
       <div className="max-w-6xl mx-auto space-y-6">
-        <h1 className="ka-text-box text-3xl font-bold text-center bg-indigo-gradient text-transparent bg-clip-text">Powered by Ka1.2</h1>
-        {/* Tabs */}
+        <h1 className="text-3xl font-bold text-center bg-indigo-gradient text-transparent bg-clip-text">Question Paper Generator</h1>
+        <p className="ka-text-box text-sm text-center bg-indigo-gradient text-transparent bg-clip-text">Powered by Ka1.2</p>
+
         <div className="card p-4">
           <div className="flex space-x-4 border-b border-indigo-light/20 pb-4">
             <button
@@ -131,7 +335,6 @@ export default function Generate() {
 
         {activeTab === 'details' ? (
           <div className="space-y-6">
-            {/* Basic Details */}
             <div className="card space-y-4">
               <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
                 Basic Details
@@ -193,7 +396,6 @@ export default function Generate() {
               </div>
             </div>
 
-            {/* Chapters */}
             <div className="card space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">
@@ -207,7 +409,6 @@ export default function Generate() {
                 </button>
               </div>
               
-              {/* Chapter Input Form */}
               <div className="flex gap-4 mb-6">
                 <input
                   type="text"
@@ -224,7 +425,6 @@ export default function Generate() {
                 />
               </div>
 
-              {/* Chapters Table */}
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -279,7 +479,7 @@ export default function Generate() {
                       <tr className="bg-indigo-light/5">
                         <td className="py-2 px-4 font-semibold">Total Marks</td>
                         <td colSpan={7} className="py-2 px-4 text-right font-semibold">
-                          {calculateTotalMarks()}
+                          {calculateTotalMarks(formData)}
                         </td>
                       </tr>
                     )}
@@ -288,70 +488,18 @@ export default function Generate() {
               </div>
             </div>
 
-            {/* Total Marks */}
             <div className="card">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">Total Marks</h2>
                 <span className="text-3xl font-bold bg-indigo-gradient text-transparent bg-clip-text">
-                  {calculateTotalMarks()}
+                  {calculateTotalMarks(formData)}
                 </span>
               </div>
             </div>
 
-            {/* Generate Paper Button */}
             <button
               className="indigo-button w-full py-4 text-lg font-semibold"
-              onClick={() => {
-                try {
-                  // Validate form data
-                  if (!formData.schoolName.trim()) throw new Error('Please enter school name');
-                  if (!formData.grade) throw new Error('Please select grade');
-                  if (!formData.subject) throw new Error('Please select subject');
-                  if (formData.chapters.length === 0) throw new Error('Please add at least one chapter');
-                  if (calculateTotalMarks() === 0) throw new Error('Please add questions to chapters');
-
-                  setError('');
-                  setLoading(true);
-                  
-                  // Generate a basic template
-                  const template = `
-                    <h1 class="text-2xl font-bold mb-4">${formData.schoolName}</h1>
-                    <div class="space-y-4">
-                      <div class="text-center">
-                        <p class="text-lg font-semibold">${formData.grade} - ${formData.subject}</p>
-                        <p>Total Marks: ${calculateTotalMarks()}</p>
-                      </div>
-                      
-                      <div class="space-y-2">
-                        <p class="font-semibold">Instructions:</p>
-                        <ol class="list-decimal list-inside">
-                          <li>All answers must be written in the answer booklet</li>
-                          <li>All questions are compulsory</li>
-                          <li>Use blue/black pen only</li>
-                        </ol>
-                      </div>
-
-                      ${formData.chapters.map((chapter, index) => `
-                        <div class="mt-6">
-                          <h2 class="text-lg font-semibold">${chapter.name}</h2>
-                          ${chapter.questions.map(q => `
-                            <div class="mt-2">
-                              <p>${q.count} question${q.count > 1 ? 's' : ''} of ${q.marks} mark${q.marks > 1 ? 's' : ''} each</p>
-                            </div>
-                          `).join('')}
-                        </div>
-                      `).join('')}
-                    </div>
-                  `;
-
-                  setGeneratedPaper(template);
-                  setActiveTab('preview');
-                } catch (err: any) {
-                  setError(err.message || 'Failed to generate paper template');
-                } finally {
-                  setLoading(false);
-                }
-              }}
+              onClick={generatePaper}
               disabled={!formData.schoolName || !formData.grade || !formData.subject || formData.chapters.length === 0}
             >
               Generate Question Paper
@@ -371,7 +519,48 @@ export default function Generate() {
                   <p className="text-gray-500">Generating your paper...</p>
                 </div>
               ) : generatedPaper ? (
-                <div className="prose max-w-none whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: generatedPaper }} />
+                <div className="prose max-w-none whitespace-pre-wrap">
+                  {generatedPaper.split('\n').map((line, i) => (
+                    <p key={i}>
+                      {line.split('$').map((part, j) => {
+                        if (j % 2 === 0) {
+                          // Process non-LaTeX text with enhanced formatting
+                          const processedText = part
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                            .replace(/_(.*?)_/g, '<u>$1</u>')
+                            .replace(/~(.*?)~/g, '<sub>$1</sub>')
+                            .replace(/\^(.*?)\^/g, '<sup>$1</sup>');
+                          return <span dangerouslySetInnerHTML={{ __html: processedText }} />;
+                        }
+                        // Process LaTeX expressions with enhanced symbol handling
+                        try {
+                          const processedLatex = part
+                            .replace(/theta/g, '\\theta')
+                            .replace(/phi/g, '\\phi')
+                            .replace(/pi/g, '\\pi')
+                            .replace(/sum/g, '\\sum')
+                            .replace(/int/g, '\\int');
+                          return (
+                            <span
+                              key={`latex-${j}`}
+                              dangerouslySetInnerHTML={{
+                                __html: katex.renderToString(processedLatex, {
+                                  throwOnError: false,
+                                  displayMode: true,
+                                  strict: false
+                                })
+                              }}
+                            />
+                          );
+                        } catch (err) {
+                          console.error('LaTeX Error:', err);
+                          return part;
+                        }
+                      })}
+                    </p>
+                  ))}
+                </div>
               ) : (
                 <div className="h-full flex items-center justify-center">
                   <p className="text-gray-500">Generate a paper to see the preview</p>
@@ -381,72 +570,7 @@ export default function Generate() {
             <button 
               className="indigo-button w-full" 
               disabled={!generatedPaper}
-              onClick={() => {
-                const doc = new jsPDF({
-                  unit: 'mm',
-                  format: 'a4',
-                  putOnlyUsedFonts: true
-                });
-
-                // Set margins
-                const margin = 20; // 20mm margins
-                const pageWidth = doc.internal.pageSize.width;
-                const pageHeight = doc.internal.pageSize.height;
-                const contentWidth = pageWidth - 2 * margin;
-
-                // Create a temporary div to render the content
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = generatedPaper;
-
-                // Process LaTeX content
-                const processLatex = (text: string) => {
-                  return text.replace(/\$(.*?)\$/g, (_, tex) => {
-                    try {
-                      return katex.renderToString(tex, { output: 'html' });
-                    } catch (err) {
-                      console.error('LaTeX Error:', err);
-                      return tex;
-                    }
-                  });
-                };
-
-                // Extract and process text content
-                let content = tempDiv.textContent || tempDiv.innerText;
-                content = processLatex(content);
-
-                // Add school name as header
-                doc.setFontSize(16);
-                doc.text(formData.schoolName, margin, margin);
-
-                // Add content with proper formatting
-                doc.setFontSize(12);
-                let y = margin + 10;
-
-                // Split content into lines with proper width
-                const lines = doc.splitTextToSize(content, contentWidth);
-
-                // Add lines to PDF with proper spacing and page breaks
-                lines.forEach((line: string) => {
-                  if (y > pageHeight - margin) {
-                    doc.addPage();
-                    y = margin;
-                  }
-
-                  // Check if line contains mathematical content
-                  if (line.match(/[\u0370-\u03FF\u2200-\u22FF]/)) {
-                    // Use special font or symbol handling for mathematical content
-                    doc.setFont('Helvetica', 'normal');
-                  } else {
-                    doc.setFont('Helvetica', 'normal');
-                  }
-
-                  doc.text(line, margin, y);
-                  y += 7; // Line spacing
-                });
-
-                // Save the PDF
-                doc.save(`${formData.schoolName.replace(/\s+/g, '_')}_${formData.subject}_${formData.grade}.pdf`);
-              }}
+              onClick={downloadPDF}
             >
               Download PDF
             </button>
