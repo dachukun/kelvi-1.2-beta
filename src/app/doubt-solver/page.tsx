@@ -1,9 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import OpenAI from 'openai';
-import katex from 'katex';
-import 'katex/dist/katex.min.css';
 import FloatingMenu from '../dashboard/components/BottomNav';
 
 export default function DoubtSolver() {
@@ -13,17 +10,6 @@ export default function DoubtSolver() {
     question: '',
     image: null as File | null
   });
-
-  const openai = new OpenAI({
-    baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL || "https://openrouter.ai/api/v1",
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-    defaultHeaders: {
-      "HTTP-Referer": process.env.NEXT_PUBLIC_OPENAI_HTTP_REFERER || "https://kelvi.ai",
-      "X-Title": process.env.NEXT_PUBLIC_OPENAI_X_TITLE || "Kelvi AI",
-    },
-    dangerouslyAllowBrowser: true
-  });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [solution, setSolution] = useState('');
@@ -56,65 +42,11 @@ export default function DoubtSolver() {
     }
 
     try {
-      let prompt = `As a ${formData.subject} teacher for grade ${formData.grade}, please help solve this question:\n\n`;
-
-      if (formData.question.trim()) {
-        prompt += formData.question;
-      }
-
-      if (formData.image) {
-        const reader = new FileReader();
-        const imageData = await new Promise((resolve) => {
-          reader.onload = (e) => resolve(e.target?.result);
-          if (formData.image) {
-            reader.readAsDataURL(formData.image);
-          }
-        });
-        prompt += `\n\nImage content: ${imageData}`;
-      }
-
-      prompt += `\n\nPlease provide a detailed solution with the following guidelines:
-1. Use LaTeX notation for mathematical expressions (e.g. $\\sin \\theta$, $\\frac{a}{b}$)
-2. Break down the solution into clear steps
-3. Include relevant formulas and explanations
-4. If applicable, provide a diagram or visual explanation`;
-
-      const completion = await openai.chat.completions.create({
-        model: "deepseek/deepseek-r1-zero:free",
-        messages: [
-          {
-            "role": "user",
-            "content": prompt
-          }
-        ],
-      });
-
-      const solution = completion.choices[0].message.content;
-      if (!solution) throw new Error('No solution generated');
-
-      // Process the solution to render LaTeX expressions
-      let processedSolution = solution;
-      
-      // Replace LaTeX delimiters with rendered math
-      processedSolution = processedSolution.replace(/\$\$([^$]+)\$\$/g, (_, tex) => {
-        try {
-          return katex.renderToString(tex, { displayMode: true });
-        } catch (err) {
-          console.error('LaTeX Error:', err);
-          return tex;
-        }
-      }).replace(/\$([^$]+)\$/g, (_, tex) => {
-        try {
-          return katex.renderToString(tex, { displayMode: false });
-        } catch (err) {
-          console.error('LaTeX Error:', err);
-          return tex;
-        }
-      });
-
-      setSolution(processedSolution);
+      // Here you would typically send the question and image to your backend
+      // For now, we'll just simulate a processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setSolution('This is a sample solution. In the actual implementation, this would be replaced with the AI-generated solution.');
     } catch (err: any) {
-      console.error('API Error:', err);
       setError('Failed to process your doubt. Please try again.');
     } finally {
       setLoading(false);
@@ -133,7 +65,7 @@ export default function DoubtSolver() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <p className="text-sm text-gray-600 mb-4">Either describe question or upload an image or PDF file</p>
+            <p className="text-sm text-gray-600 mb-4">Either describe question or upload PDF only</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-1">
@@ -216,14 +148,14 @@ export default function DoubtSolver() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
-                        accept="image/*,.pdf"
+                        accept="application/pdf"
                         onChange={handleImageChange}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs text-gray-500">
-                    Image files (PNG, JPEG, GIF) or PDF files up to 10MB
+                    PDF files up to 10MB
                   </p>
                   {formData.image && (
                     <p className="text-sm text-indigo-light">
@@ -254,7 +186,7 @@ export default function DoubtSolver() {
             <div className="space-y-4">
               <h3 className="text-xl font-semibold bg-indigo-gradient text-transparent bg-clip-text">Solution</h3>
               <div className="prose prose-indigo max-w-none">
-                <div className="text-gray-700 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: solution }} />
+                <p className="text-gray-700 whitespace-pre-wrap">{solution}</p>
               </div>
             </div>
           </div>
